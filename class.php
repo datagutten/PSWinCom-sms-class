@@ -16,7 +16,7 @@ class pswinsms
 		$this->xml=new SimpleXMLElement('<?xml version="1.0"?><!DOCTYPE SESSION SYSTEM "pswincom_submit.dtd"><SESSION></SESSION>');
 		$this->xml->addChild('CLIENT',$username);
 		$this->xml->addChild('PW',$password);
-		$this->msglist=$xml->addChild('MSGLST');
+		$this->msglist=$this->xml->addChild('MSGLST');
 	}
 	public function addmessage($to,$text,$from)
 	{
