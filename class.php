@@ -28,11 +28,32 @@ class pswinsms
 	public function sendmessages()
 	{
 		curl_setopt($this->ch,CURLOPT_POSTFIELDS,$this->xml->asXML());
-		return curl_exec($this->ch);
+		return $this->checkresult(curl_exec($this->ch));
 	}
 	public function sendsinglemessage($to,$text,$from)
 	{
 		$this->addmessage($to,$text,$from);
 		return $this->sendmessages();
+	}
+	public function checkresult($xmlstring)
+	{
+		if(empty($xmlstring))
+			return false;
+		$xml=simplexml_load_string($xmlstring);
+
+		$msgqueue=(array)$this->msglist;
+		$msgqueue=$msgqueue['MSG'];
+
+		foreach($xml->MSGLST->MSG as $key=>$msg)
+		{
+			$id=(int)$msg->ID;
+			$recipient=(string)$msgqueue[$id-1]->RCV;
+
+			if((string)$msg->STATUS=='OK')
+				$result[$recipient]=true;
+			else
+				$result[$recipient]=(string)$msg->STATUS;
+		}
+		return $result;
 	}
 }
