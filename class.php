@@ -27,7 +27,7 @@ class pswinsms
 	}
 	public function sendmessages()
 	{
-		curl_setopt($this->ch,CURLOPT_POSTFIELDS,$this->xml->asXML());
+		curl_setopt($this->ch,CURLOPT_POSTFIELDS,utf8_decode($this->xml->asXML()));
 		return $this->checkresult(curl_exec($this->ch));
 	}
 	public function sendsinglemessage($to,$text,$from)
@@ -43,7 +43,6 @@ class pswinsms
 
 		$msgqueue=(array)$this->msglist;
 		$msgqueue=$msgqueue['MSG'];
-
 		foreach($xml->MSGLST->MSG as $key=>$msg)
 		{
 			$id=(int)$msg->ID;
@@ -52,7 +51,7 @@ class pswinsms
 			if((string)$msg->STATUS=='OK')
 				$result[$recipient]=true;
 			else
-				$result[$recipient]=(string)$msg->STATUS;
+				$result[$recipient]=(string)$msg->INFO;
 		}
 		return $result;
 	}
